@@ -8,6 +8,9 @@ from scr.logger import logging
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 
+from scr.components.data_transformation import DataTransformation #importing the data transformation class to use the data transformation config class
+from scr.components.data_transformation import DataTransformationConfig #importing the data transformation config class to use the preprocessor object file path
+
 @dataclass
 class dataingestionconfig:
     train_data_path: str=os.path.join('artifacts','train.csv')
@@ -73,7 +76,9 @@ class DataIngestion:
 if __name__=="__main__": #this is the main function to call the data ingestion class
     obj=DataIngestion()  #create an object of the data ingestion class
 
-    obj.initiate_data_ingestion() 
+    train_data, test_data = obj.initiate_data_ingestion()
+    data_transformation=DataTransformation()
+    data_transformation.initiate_data_transformation(train_data, test_data)  
     
     #call the initiate_data_ingestion method to start the data ingestion process
     #this will run the data ingestion process and save the data in the artifacts folder
