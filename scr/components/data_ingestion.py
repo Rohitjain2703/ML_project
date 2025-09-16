@@ -11,6 +11,9 @@ from dataclasses import dataclass
 from scr.components.data_transformation import DataTransformation #importing the data transformation class to use the data transformation config class
 from scr.components.data_transformation import DataTransformationConfig #importing the data transformation config class to use the preprocessor object file path
 
+from scr.components.model_trainer import modeltrainerconfig #importing the model trainer config class to use the trained model file path
+from scr.components.model_trainer import ModelTrainer #importing the model trainer class to use the initiate model trainer method
+
 @dataclass
 class dataingestionconfig:
     train_data_path: str=os.path.join('artifacts','train.csv')
@@ -78,7 +81,10 @@ if __name__=="__main__": #this is the main function to call the data ingestion c
 
     train_data, test_data = obj.initiate_data_ingestion()
     data_transformation=DataTransformation()
-    data_transformation.initiate_data_transformation(train_data, test_data)  
+    train_array, test_array ,preprocessor_path= data_transformation.initiate_data_transformation(train_data, test_data)
     
     #call the initiate_data_ingestion method to start the data ingestion process
     #this will run the data ingestion process and save the data in the artifacts folder
+
+    ModelTrainer=ModelTrainer()
+    print(ModelTrainer.initiate_model_trainer(train_array, test_array))
