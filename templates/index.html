@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Student Performance Predictor</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+			min-height: 100vh;
+		}
+		.container {
+			margin-top: 60px;
+			max-width: 600px;
+			background: #fff;
+			border-radius: 16px;
+			box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+			padding: 32px 24px;
+		}
+		.form-label {
+			font-weight: 600;
+		}
+		.btn-primary {
+			background: #f6d365;
+			border: none;
+			color: #333;
+			font-weight: 600;
+		}
+		.btn-primary:hover {
+			background: #fda085;
+			color: #fff;
+		}
+		.result {
+			margin-top: 24px;
+			font-size: 1.2rem;
+			font-weight: 600;
+			color: #2d3436;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h2 class="text-center mb-4">Student Performance Predictor</h2>
+		<form id="predictForm">
+			<div class="mb-3">
+				<label for="gender" class="form-label">Gender</label>
+				<select class="form-select" id="gender" name="gender" required>
+					<option value="">Select</option>
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="race_ethnicity" class="form-label">Race/Ethnicity</label>
+				<select class="form-select" id="race_ethnicity" name="race_ethnicity" required>
+					<option value="">Select</option>
+					<option value="Group A">Group A</option>
+					<option value="Group B">Group B</option>
+					<option value="Group C">Group C</option>
+					<option value="Group D">Group D</option>
+					<option value="Group E">Group E</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="parental_level_of_education" class="form-label">Parental Level of Education</label>
+				<select class="form-select" id="parental_level_of_education" name="parental_level_of_education" required>
+					<option value="">Select</option>
+					<option value="Some high school">Some high school</option>
+					<option value="High school">High school</option>
+					<option value="Associate's degree">Associate's degree</option>
+					<option value="Bachelor's degree">Bachelor's degree</option>
+					<option value="Master's degree">Master's degree</option>
+					<option value="Some college">Some college</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="lunch" class="form-label">Lunch</label>
+				<select class="form-select" id="lunch" name="lunch" required>
+					<option value="">Select</option>
+					<option value="standard">Standard</option>
+					<option value="free/reduced">Free/Reduced</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="test_preparation_course" class="form-label">Test Preparation Course</label>
+				<select class="form-select" id="test_preparation_course" name="test_preparation_course" required>
+					<option value="">Select</option>
+					<option value="none">None</option>
+					<option value="completed">Completed</option>
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="reading_score" class="form-label">Reading Score</label>
+				<input type="number" class="form-control" id="reading_score" name="reading_score" min="0" max="100" required>
+			</div>
+			<div class="mb-3">
+				<label for="writing_score" class="form-label">Writing Score</label>
+				<input type="number" class="form-control" id="writing_score" name="writing_score" min="0" max="100" required>
+			</div>
+			<button type="submit" class="btn btn-primary w-100">Predict Math Score</button>
+		</form>
+		<div class="result text-center" id="result"></div>
+	</div>
+	<script>
+		document.getElementById('predictForm').addEventListener('submit', async function(e) {
+			e.preventDefault();
+			const formData = new FormData(this);
+			const data = {};
+			formData.forEach((value, key) => { data[key] = value; });
+			document.getElementById('result').textContent = 'Predicting...';
+			try {
+				const response = await fetch('/predict', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(data)
+				});
+				const result = await response.json();
+				if (response.ok) {
+					document.getElementById('result').textContent = 'Predicted Math Score: ' + result.prediction;
+				} else {
+					document.getElementById('result').textContent = 'Error: ' + (result.error || 'Prediction failed.');
+				}
+			} catch (err) {
+				document.getElementById('result').textContent = 'Error: Could not connect to server.';
+			}
+		});
+	</script>
+</body>
+</html>
